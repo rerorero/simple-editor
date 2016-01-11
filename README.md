@@ -1,17 +1,7 @@
-My Electron Boilerplate
-======
-* live reload (electron-connect)
-* React.js and flux
-* Javascript on babel
-* css on stylus
-* task on gulp
-
-Get Started
+Electron Sample Editor Application
 ======
 1. `npm i`
 2. `npm start` or `gulp`
-
-
 
 Application Distribution
 ======

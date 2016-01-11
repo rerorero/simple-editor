@@ -2,6 +2,7 @@ var path = require('path');
 
 var app = './app';
 var dev = './dev';
+var test = './test';
 var dist = './dist/target';
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
   test: {
     src: test + '/**/*.test.{js,jsx}',
     dev: dev + '/**/*.test.{js,jsx}'
-  }
+  },
 
   index: {
     src: app + '/index.html',

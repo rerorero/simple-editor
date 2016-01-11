@@ -29,6 +29,6 @@ gulp.task('compile:dev:watch', function(done) {
   done();
 });
 
-gulpp.task('compile:dev', function() {
+gulp.task('compile:dev', function() {
   compileTask(watch = false);
 });

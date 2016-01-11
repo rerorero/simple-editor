@@ -2,7 +2,7 @@
 import keyMirror from 'keymirror';
 
 const actionTypes = keyMirror({
-  DIRTREE_NODE_STATE_CHANGED: null,
+  DIRTREE_NODE_CHANGED: null,
   DIRTREE_ROOT_CHANGED: null
 });
 

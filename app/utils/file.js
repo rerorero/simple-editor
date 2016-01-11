@@ -10,7 +10,11 @@ function toPromiseFunc(f){
         if(err) reject(err);
         else resolve(...rest);
       });
-      f.apply(fs, args);
+      try {
+        f.apply(fs, args);
+      } catch (e) {
+        reject(e);
+      }
     });
   };
 }
@@ -29,13 +33,18 @@ Object.keys(fs).forEach((key) =>{
 });
 
 function pathToName(path) {
-  return path.match(".+/(.+?)([\?#;].*)?$")[1];
+  const matches = path.match(".+/(.+?)([\?#;].*)?$");
+  return matches === null ? path : matches[1];
 }
 
 function toRelativePath(path, rootPath) {
   if (!path.includes(rootPath))
     throw "path does not include rootPath.";
   return path.replace(rootPath + "/", "");
+}
+
+function isSubPath(parent, target) {
+  return target.indexOf(parent) === 0;
 }
 
 const file = {

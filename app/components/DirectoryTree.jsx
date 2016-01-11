@@ -7,12 +7,8 @@ function onNodeSelected(attr) {
   attr.actions.onTreeNodeSelected(attr.path, attr.rootPath);
 }
 
-function onNodeExpanded(attr) {
-  attr.actions.onTreeNodeExpanded(attr.path, attr.rootPath);
-}
-
-function onNodeContracted(attr) {
-  attr.actions.onTreeNodeContracted(attr.path, attr.rootPath);
+function onNodeChildrenVisibleChanged(attr, visible) {
+  attr.actions.onTreeNodeChildrenVisibleChanged(attr.path, visible, attr.rootPath);
 }
 
 function noop() {}
@@ -24,31 +20,33 @@ class DirectoryTree extends Component {
       return null;
 
     let icon;
-    let onSelected;
-    let onExpand;
-    let onContract;
+    let selectedHandler;
+    let childrenVisibleHandler;
 
     if (dirNode.isDir) {
       icon = {
         expanded: '📂',
         contracted: '📁'
       };
-      onSelected = noop,
-      onExpand = onNodeExpanded,
-      onContract = onNodeContracted,
+      onSelected = noop;
+      onChildrenVisibleChanged = onNodeChildrenVisibleChanged;
 
     } else if (dirNode.isFile) {
       icon = {
         expanded: '📄',
         contracted: '📄'
       };
-      onSelected = onNodeSelected,
-      onExpand = noop,
-      onContract = noop,
+      onSelected = onNodeSelected;
+      onChildrenVisibleChanged = noop;
 
     } else {
       return null;
     }
+
+    const childNodes = dirNode.children === null ? null :
+      dirNode.children.map((child) => {
+        return this.mapDirTreeToNodeProps(child, rootPath);
+      });
 
     return {
       label: dirNode.name,
@@ -58,11 +56,9 @@ class DirectoryTree extends Component {
         rootPath
       },
       onSelected,
-      onExpand,
-      onContract,
-      expanded: dirNode.expended,
+      onChildrenVisibleChanged,
       icon,
-      childNode: this.mapDirTreeToNodeProps(dirNode.child, rootPath)
+      childNodes
     };
   }
 
@@ -88,7 +84,13 @@ class DirectoryTree extends Component {
 }
 
 DirectoryTree.propTypes = {
-  directoryTreeState: PropTypes.object.isRequired,
+  directoryTreeState: PropTypes.shape({
+    isDir: PropTypes.bool.isRequired,
+    isFile: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+    children: PropTypes.array
+  }),
   actions: PropTypes.object.isRequired
 };
 

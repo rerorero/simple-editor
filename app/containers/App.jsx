@@ -2,17 +2,22 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DirectoryTree from '../components/DirectoryTree';
-import * as DirectoryTreeActions from '../actions/directory_tree';
+import dirTreeActions from '../actions/dirTreeActions';
 import { bindActionCreators } from 'redux';
 
 class App extends Component {
-  render() {
+  handleOnClick(e) {
+    this.props.actions.dirTreeActions.onTreeRootChanged(".");
+  }
 
+  render() {
     return (
       <div>
         <DirectoryTree
           directoryTreeState={this.props.directoryTreeState}
-          actions={this.actions.dirTreeActions} />
+          actions={this.props.actions.dirTreeActions}
+          />
+        <span onClick={this.handleOnClick.bind(this)}>test</span>
       </div>
     );
   }
@@ -31,7 +36,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    dirTreeActions: bindActionCreators(DirectoryTreeActions, dispatch)
+    actions: {
+      dirTreeActions: bindActionCreators(dirTreeActions, dispatch)
+    }
   };
 }
 
