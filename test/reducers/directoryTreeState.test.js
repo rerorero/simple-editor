@@ -7,14 +7,14 @@ const assert = chai.assert;
 
 const root = '/root/dir';
 
-function genRandomTree(depth, path) {
-
-}
-
-describe('directoryTreeState', () => {
-
-  describe('actionTypes.DIRTREE_ROOT_CHANGED', () => {
-    it('sets root node.', () => {
-      directoryTreeState()
-    });
-  });
+// function genRandomTree(depth, path) {
+// 
+// }
+//
+// describe('directoryTreeState', () => {
+//
+//   describe('actionTypes.DIRTREE_ROOT_CHANGED', () => {
+//     it('sets root node.', () => {
+//     });
+//   });
+// });
