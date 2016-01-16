@@ -20,7 +20,11 @@ describe('directoryTreeState', () => {
           type: actionTypes.DIRTREE_ROOT_CHANGED,
           root: v.arbNew
         };
-        assert(directoryTreeState(v.arbOrg, action) === v.arbNew);
+        const state = {
+          tree: v.arbOrg,
+          selected: 'foo'
+        };
+        assert(directoryTreeState(state, action).tree === v.arbNew);
       });
     });
 
@@ -31,7 +35,11 @@ describe('directoryTreeState', () => {
           type: actionTypes.DIRTREE_ROOT_CHANGED,
           root: null
         };
-        assert(directoryTreeState(v, action) === null);
+        const state = {
+          tree: v,
+          selected: 'foo'
+        };
+        assert(directoryTreeState(state, action).tree === null);
       });
     });
 
@@ -51,11 +59,14 @@ describe('directoryTreeState', () => {
           type: actionTypes.DIRTREE_NODE_CHANGED,
           node: updated
         };
-
-        const actualState = directoryTreeState(tree, action);
+        const state = {
+          tree,
+          selected: 'foo'
+        };
+        const actualState = directoryTreeState(state, action);
         assert(tree.findByPath(newChildren.path) === null, 'findByPath() is not null');
-        assert(actualState.findByPath(newChildren.path) === newChildren, 'findByPath() is null');
-        assert(tree.path === actualState.path);
+        assert(actualState.tree.findByPath(newChildren.path) === newChildren, 'findByPath() is null');
+        assert(tree.path === actualState.tree.path);
       });
     });
 

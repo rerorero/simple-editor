@@ -4,7 +4,7 @@ import React, {Component, PropTypes} from 'react';
 import TreeNode from './controll/TreeNode';
 
 function onNodeSelected(attr) {
-  attr.actions.onTreeNodeSelected(attr.path, attr.rootPath);
+  attr.actions.onTreeNodeSelected(attr.path);
 }
 
 function onNodeChildrenVisibleChanged(attr, visible) {
@@ -30,7 +30,6 @@ class DirectoryTree extends Component {
       onSelected = noop;
       onChildrenVisibleChanged = onNodeChildrenVisibleChanged;
 
-
     } else if (dirNode.isFile()) {
       icon = 'icon-doc-text';
       arrowIcon = null;
@@ -46,6 +45,8 @@ class DirectoryTree extends Component {
         return this.mapDirTreeToNodeProps(child);
       });
 
+    const selected = this.props.directoryTreeState.selected === dirNode.path;
+
     return {
       label: dirNode.name,
       attr: {
@@ -57,12 +58,13 @@ class DirectoryTree extends Component {
       onChildrenVisibleChanged,
       icon,
       arrowIcon,
-      childNodes
+      childNodes,
+      selected
     };
   }
 
   render() {
-    const nodePropTree = this.mapDirTreeToNodeProps(this.props.directoryTreeState);
+    const nodePropTree = this.mapDirTreeToNodeProps(this.props.directoryTreeState.tree);
 
     let treeNode = (nodePropTree !== null) ?
       <TreeNode {...nodePropTree} /> :
@@ -78,7 +80,10 @@ class DirectoryTree extends Component {
 }
 
 DirectoryTree.propTypes = {
-  directoryTreeState: PropTypes.object, // DirTreeNode
+  directoryTreeState: PropTypes.shape({
+    tree: PropTypes.object,  // DirTreeNode
+    selected: PropTypes.string
+  }).isRequired,
   actions: PropTypes.object.isRequired
 };
 

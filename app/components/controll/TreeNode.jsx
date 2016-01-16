@@ -33,9 +33,13 @@ class TreeNode extends Component {
       <span className={'icon ' + this.props.arrowIcon}></span> :
       <span className="icon"></span>;
 
+    var itemClass = "nav-group-item tree-node-item";
+    if (this.props.selected)
+      itemClass += " active";
+
     return (
       <nav className="nav-group tree-node-group">
-        <span className="nav-group-item tree-node-item"
+        <span className={itemClass}
           onClick={this.handleToggleChildrenShown.bind(this)}
           onDoubleClick={this.handleSelected.bind(this)}>
           {arrowIcon}
@@ -55,7 +59,8 @@ TreeNode.propTypes = {
   onChildrenVisibleChanged: PropTypes.func.isRequired,
   icon: PropTypes.string.isRequired,
   arrowIcon: PropTypes.string,
-  childNodes: PropTypes.array
+  childNodes: PropTypes.array,
+  selected: PropTypes.string
 };
 
 export default TreeNode;

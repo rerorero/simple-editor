@@ -29,6 +29,13 @@ function nodeChangedAction(node) {
   };
 }
 
+function nodeSelectedAction(nodePath) {
+  return {
+    type: actionTypes.DIRTREE_NODE_SELECTED,
+    nodePath
+  };
+}
+
 /**
  * Handle tree root changed.
  * @param  {string} path  Abstract path to which root points
@@ -106,7 +113,9 @@ export function onTreeNodeVisibleChildrenChanged(nodePath, rootPath, visible) {
   };
 }
 
-// export function onTreeNodeSelected(path, rootPath) {
-//   // TODO
-//   throw 'not implemented';
-// }
+export function onTreeNodeSelected(path) {
+  console.log("onTreeNodeSelected:", path);
+  return dispatch => {
+    dispatch(nodeSelectedAction(path))
+  }
+}
