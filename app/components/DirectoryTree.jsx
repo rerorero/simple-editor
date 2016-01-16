@@ -8,34 +8,32 @@ function onNodeSelected(attr) {
 }
 
 function onNodeChildrenVisibleChanged(attr, visible) {
-  attr.actions.onTreeNodeChildrenVisibleChanged(attr.path, visible, attr.rootPath);
+  attr.actions.onTreeNodeVisibleChildrenChanged(attr.path, attr.rootPath, visible);
 }
 
 function noop() {}
 
 class DirectoryTree extends Component {
 
-  mapDirTreeToNodeProps(dirNode, rootPath) {
+  mapDirTreeToNodeProps(dirNode) {
     if (dirNode === null)
       return null;
 
     let icon;
-    let selectedHandler;
-    let childrenVisibleHandler;
+    let arrowIcon;
+    let onSelected;
+    let onChildrenVisibleChanged;
 
-    if (dirNode.isDir) {
-      icon = {
-        expanded: '📂',
-        contracted: '📁'
-      };
+    if (dirNode.isDir()) {
+      icon = 'icon-folder';
+      arrowIcon = dirNode.children === null ? 'icon-right-open' : 'icon-down-open';
       onSelected = noop;
       onChildrenVisibleChanged = onNodeChildrenVisibleChanged;
 
-    } else if (dirNode.isFile) {
-      icon = {
-        expanded: '📄',
-        contracted: '📄'
-      };
+
+    } else if (dirNode.isFile()) {
+      icon = 'icon-doc-text';
+      arrowIcon = null;
       onSelected = onNodeSelected;
       onChildrenVisibleChanged = noop;
 
@@ -45,7 +43,7 @@ class DirectoryTree extends Component {
 
     const childNodes = dirNode.children === null ? null :
       dirNode.children.map((child) => {
-        return this.mapDirTreeToNodeProps(child, rootPath);
+        return this.mapDirTreeToNodeProps(child);
       });
 
     return {
@@ -53,23 +51,19 @@ class DirectoryTree extends Component {
       attr: {
         actions: this.props.actions,
         path: dirNode.path,
-        rootPath
+        rootPath: dirNode.rootPath
       },
       onSelected,
       onChildrenVisibleChanged,
       icon,
+      arrowIcon,
       childNodes
     };
   }
 
   render() {
-    const treeState = this.props.directoryTreeState;
+    const nodePropTree = this.mapDirTreeToNodeProps(this.props.directoryTreeState);
 
-    var rootPath = null;
-    if (treeState !== null)
-      rootPath = treeState.path;
-
-    const nodePropTree = this.mapDirTreeToNodeProps(treeState);
     let treeNode = (nodePropTree !== null) ?
       <TreeNode {...nodePropTree} /> :
       <span>(Root not specified)</span>;
@@ -84,13 +78,7 @@ class DirectoryTree extends Component {
 }
 
 DirectoryTree.propTypes = {
-  directoryTreeState: PropTypes.shape({
-    isDir: PropTypes.bool.isRequired,
-    isFile: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    children: PropTypes.array
-  }),
+  directoryTreeState: PropTypes.object, // DirTreeNode
   actions: PropTypes.object.isRequired
 };
 

@@ -3,7 +3,11 @@ var $ = require('gulp-load-plugins')();
 var config = require('./config');
 
 gulp.task('test', ['html:dev', 'compile:dev', 'styles:dev', 'test:compile'], function() {
-  return gulp.src(config.test.dev, {read: false})
+  var fileOpt = process.argv[4];
+  if (typeof fileOpt !== 'string') {
+    fileOpt = config.test.dev;
+  }
+  return gulp.src(fileOpt, {read: false})
     .pipe($.mocha({reporter: 'list'}));
 });
 

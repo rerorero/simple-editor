@@ -1,9 +1,15 @@
 'use strict';
 import actionTypes from '../constants/actionTypes';
 import file from '../utils/file';
+import * as model from '../model';
 
 const fs = file.fsPromise;
 
+/**
+ * Creates a root changing action
+ * @param  {DirTreeNode} root
+ * @return {object}      action
+ */
 function rootChangeAction(root) {
   return {
     type: actionTypes.DIRTREE_ROOT_CHANGED,
@@ -11,6 +17,11 @@ function rootChangeAction(root) {
   };
 }
 
+/**
+ * Creates a node state changing action
+ * @param  {DirTreeNode} node
+ * @return {object}      action
+ */
 function nodeChangedAction(node) {
   return {
     type: actionTypes.DIRTREE_NODE_CHANGED,
@@ -18,26 +29,11 @@ function nodeChangedAction(node) {
   };
 }
 
-function newNode(path, stat, children = null) {
-  var isDir = false;
-  var isFile = false;
-  if (stat.isDirectory()) {
-    isDir = true;
-  } else if (stat.isFile()) {
-    isFile = true;
-  } else {
-    return null;
-  }
-
-  return {
-    isDir,
-    isFile,
-    name: file.pathToName(path),
-    path: path,
-    children
-  };
-}
-
+/**
+ * Handle tree root changed.
+ * @param  {string} path  Abstract path to which root points
+ * @return {dispatch => Promise}  dispatch function
+ */
 export function onTreeRootChanged(path) {
   return dispatch => {
     console.log("onTreeRootChanged: " + path);
@@ -45,7 +41,8 @@ export function onTreeRootChanged(path) {
     return fs.stat(path)
       .then((stat) => {
         if (stat.isDirectory()) {
-          const root = newNode(path, stat);
+          const type = model.DirTreeNode.statToType(stat);
+          const root = new model.DirTreeNode(path, path, type);
           dispatch(rootChangeAction(root));
 
         } else {
@@ -62,32 +59,40 @@ export function onTreeRootChanged(path) {
   };
 }
 
-export function onTreeNodeVisibleChildrenChanged(nodePath, visible, rootPath) {
-  console.log("onTreeNodeVisibleChildrenChanged: " + nodePath + ", " + visible + ", "+ rootPath);
+/**
+ * Handle action to expand/contruct directory tree.
+ * @param  {string} nodePath  Abstract path of node to change
+ * @param  {boolean} visible  visibility
+ * @return {dispatch => Promise}          dispatch function
+ */
+export function onTreeNodeVisibleChildrenChanged(nodePath, rootPath, visible) {
+  console.log("onTreeNodeVisibleChildrenChanged: " + nodePath + ", " + visible);
   return dispatch => {
     return fs.stat(nodePath)
       .then((nodeStat) => {
+        const type = model.DirTreeNode.statToType(nodeStat);
 
         if (nodeStat.isDirectory() && visible) {
           return fs.readdir(nodePath)
-            .then((files) => {
+            .then(files => {
               // return Promise([[absolutePath, stat], [absolutePath2, stat2], ...])
-              return Promise.all( files.map((f) => {
+              return Promise.all( files.map(f => {
                 const childPath = nodePath + "/" + f;
                 return fs.stat(childPath)
-                  .then((childStat) => [childPath, childStat]);
+                  .then(childStat => [childPath, childStat]);
               }));
-            }).then((childStats) => {
-              const childNodes = childStats.map((pair) => {
+            }).then(childStats => {
+              const childNodes = childStats.map(pair => {
                 const [path, stat] = pair;
-                return newNode(path, stat);
+                const childType = model.DirTreeNode.statToType(stat);
+                return new model.DirTreeNode(path, rootPath, childType);
               });
-              return newNode(nodePath, nodeStat, childNodes);
+              return new model.DirTreeNode(nodePath, rootPath, type, childNodes);
             });
 
         } else {
           console.log("onTreeNodeVisibleChildrenChanged: not directory or invisible: " + nodePath);
-          return newNode(nodePath, nodeStat);
+          return new model.DirTreeNode(nodePath, rootPath, type);
         }
 
       }).then((node) => {
@@ -101,7 +106,7 @@ export function onTreeNodeVisibleChildrenChanged(nodePath, visible, rootPath) {
   };
 }
 
-export function onTreeNodeSelected(path, rootPath) {
-  // TODO
-  throw 'not implemented';
-}
+// export function onTreeNodeSelected(path, rootPath) {
+//   // TODO
+//   throw 'not implemented';
+// }

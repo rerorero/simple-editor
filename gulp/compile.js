@@ -30,5 +30,5 @@ gulp.task('compile:dev:watch', function(done) {
 });
 
 gulp.task('compile:dev', function() {
-  compileTask(watch = false);
+  return compileTask(watch = false);
 });

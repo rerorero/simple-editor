@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DirectoryTree from '../components/DirectoryTree';
-import dirTreeActions from '../actions/dirTreeActions';
+import * as dirTreeActions from '../actions/dirTreeActions';
 import { bindActionCreators } from 'redux';
 
 class App extends Component {

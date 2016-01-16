@@ -35,6 +35,12 @@ module.exports = {
     }
   },
 
+  vendor : {
+    src: './vendor/**/*',
+    dev: dev + '/vendor',
+    dist: dist + '/vendor'
+  },
+
   workDirs: {
     dev: dev,
     dist: dist

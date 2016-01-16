@@ -50,7 +50,8 @@ function isSubPath(parent, target) {
 const file = {
   fsPromise,
   pathToName,
-  toRelativePath
+  toRelativePath,
+  isSubPath
 };
 
 export default file;
