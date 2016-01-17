@@ -59,7 +59,8 @@ class DirectoryTree extends Component {
       icon,
       arrowIcon,
       childNodes,
-      selected
+      selected,
+      key: dirNode.path
     };
   }
 

@@ -21,7 +21,7 @@ class TreeNode extends Component {
     let child;
     if (this.areChildrenVisible()) {
       const childItems = this.props.childNodes.map((node) => {
-        return <TreeNode {...node} />;
+        return <TreeNode {...node} key={node.key} />;
       })
       child =
         <div className="tree-node-child">
@@ -60,7 +60,7 @@ TreeNode.propTypes = {
   icon: PropTypes.string.isRequired,
   arrowIcon: PropTypes.string,
   childNodes: PropTypes.array,
-  selected: PropTypes.string
+  selected: PropTypes.bool
 };
 
 export default TreeNode;
