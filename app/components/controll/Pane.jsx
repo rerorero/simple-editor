@@ -33,7 +33,7 @@ export class Pane extends Component {
     }
 
     return (
-      <div className={classes.join(' ')} style={style}>
+      <div className={classes.join(' ')} style={style} id={this.props.id}>
         {this.props.children}
       </div>
     );
@@ -42,7 +42,8 @@ export class Pane extends Component {
 
 Pane.propTypes = {
   type: PropTypes.string.isRequired,
-  initSize: PropTypes.number
+  initSize: PropTypes.number,
+  id: PropTypes.string
 };
 
 
@@ -113,9 +114,16 @@ export class PaneWindow extends Component {
     const classes = ['pane-window-' + this.props.type];
     const borderClasses = ['pane-border-' + this.props.type];
 
+    var pane1prop = {}, pane2prop = {};
+    if (this.props.paneProps) {
+      pane1prop = Object.assign({}, this.props.paneProps.pane1);
+      pane2prop = Object.assign({}, this.props.paneProps.pane2);
+    }
+
     return (
       <div className={classes.join(' ')}>
-        <Pane ref="pane1" key="pane1" type={this.props.type} initSize={this.props.pane1InitSize}>
+        <Pane ref="pane1" key="pane1" type={this.props.type}
+          initSize={this.props.pane1InitSize} {...pane1prop}>
           {this.props.children[0]}
         </Pane>
 
@@ -126,7 +134,7 @@ export class PaneWindow extends Component {
           type={this.props.type}
           onMouseDown={this.onMouseDown.bind(this)} />
 
-        <Pane ref="pane2" key="pane2" type={this.props.type}>
+        <Pane ref="pane2" key="pane2" type={this.props.type} {...pane2prop}>
           {this.props.children[1]}
         </Pane>
       </div>
@@ -136,5 +144,9 @@ export class PaneWindow extends Component {
 
 PaneWindow.propTypes = {
   type: PropTypes.string.isRequired,
-  pane1InitSize: PropTypes.number
+  pane1InitSize: PropTypes.number,
+  paneProps: PropTypes.shape({
+    pane1: PropTypes.object,
+    pane2: PropTypes.object
+  })
 };
