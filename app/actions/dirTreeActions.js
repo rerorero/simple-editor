@@ -2,6 +2,7 @@
 import actionTypes from '../constants/actionTypes';
 import file from '../utils/file';
 import * as model from '../model';
+import * as editorActions from './editorActions';
 
 const fs = file.fsPromise;
 
@@ -29,10 +30,10 @@ function nodeChangedAction(node) {
   };
 }
 
-function nodeSelectedAction(nodePath) {
+function nodeSelectedAction(absolutePath) {
   return {
     type: actionTypes.DIRTREE_NODE_SELECTED,
-    nodePath
+    absolutePath
   };
 }
 
@@ -113,9 +114,9 @@ export function onTreeNodeVisibleChildrenChanged(nodePath, rootPath, visible) {
   };
 }
 
-export function onTreeNodeSelected(path) {
-  console.log("onTreeNodeSelected:", path);
+export function onTreeNodeSelected(absolutePath) {
+  console.log("onTreeNodeSelected:", absolutePath);
   return dispatch => {
-    dispatch(nodeSelectedAction(path))
-  }
+    dispatch(nodeSelectedAction(absolutePath));
+  };
 }

@@ -32,9 +32,12 @@ export default function directoryTreeState(state = initialState, action) {
       });
 
     case actionTypes.DIRTREE_NODE_SELECTED:
-      return Object.assign({}, state, {
-        selected: action.nodePath
-      });
+      if (state.tree !== null && file.isSubPath(state.tree.path, action.absolutePath)) {
+        return Object.assign({}, state, {
+          selected: file.toRelativePath(state.tree.path, action.absolutePath)
+        });
+      }
+      return state;
 
     default:
       return state;

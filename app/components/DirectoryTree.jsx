@@ -2,13 +2,16 @@
 
 import React, {Component, PropTypes} from 'react';
 import TreeNode from './controll/TreeNode';
+import file from '../utils/file';
 
 function onNodeSelected(attr) {
-  attr.actions.onTreeNodeSelected(attr.path);
+  const path = attr.rootPath + attr.path;
+  attr.actions.dirTreeActions.onTreeNodeSelected(path);
+  attr.actions.editorActions.setCurrentSource(this.sourceState, path);
 }
 
 function onNodeChildrenVisibleChanged(attr, visible) {
-  attr.actions.onTreeNodeVisibleChildrenChanged(attr.path, attr.rootPath, visible);
+  attr.actions.dirTreeActions.onTreeNodeVisibleChildrenChanged(attr.path, attr.rootPath, visible);
 }
 
 function noop() {}
@@ -50,7 +53,7 @@ class DirectoryTree extends Component {
     return {
       label: dirNode.name,
       attr: {
-        actions: this.props.actions,
+        actions: this.props.actions.dirTreeActions,
         path: dirNode.path,
         rootPath: dirNode.rootPath
       },

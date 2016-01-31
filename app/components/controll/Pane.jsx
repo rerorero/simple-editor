@@ -1,3 +1,4 @@
+/* global document */
 'use strict';
 
 import keyMirror from 'keymirror';
